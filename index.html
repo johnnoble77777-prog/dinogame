@@ -3,74 +3,227 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cyber Dino Run | Arcade Edition</title>
+  <meta name="description" content="Coconut Breaker - An addictive, tactile arcade clicking and breaking game with lush tropical vibes and satisfying upgrades.">
+  <title>Coconut Breaker 🥥🔨</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Fredoka+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="ambient-glow"></div>
-  <div class="stars-container" id="stars"></div>
+  <div class="tropical-bg">
+    <div class="sun"></div>
+    <div class="wave wave1"></div>
+    <div class="wave wave2"></div>
+    <div class="floating-leaves" id="leavesContainer"></div>
+  </div>
 
-  <main class="game-wrapper">
+  <div class="app-layout">
+    <!-- Header -->
     <header class="game-header">
-      <div class="badge-tag">RETRO ARCADE</div>
-      <h1 class="game-title">CHRONO DINO</h1>
-      <p class="game-subtitle">Dodge prehistoric hazards & cyber-obstacles in high-speed hyperspace</p>
-    </header>
-
-    <div class="hud-panel">
-      <div class="hud-item score-card">
-        <span class="hud-label">SCORE</span>
-        <span id="score-display" class="hud-val">00000</span>
-      </div>
-      <div class="hud-item hi-card">
-        <span class="hud-label">HI-SCORE</span>
-        <span id="hiscore-display" class="hud-val">00000</span>
-      </div>
-      <div class="hud-item speed-card">
-        <span class="hud-label">VELOCITY</span>
-        <span id="speed-display" class="hud-val">1.0x</span>
-      </div>
-    </div>
-
-    <div class="canvas-container">
-      <canvas id="gameCanvas" width="900" height="320"></canvas>
-      
-      <!-- Overlay Screen for Start & Game Over -->
-      <div id="overlay-screen" class="game-overlay visible">
-        <div class="overlay-card">
-          <div id="overlay-icon" class="overlay-icon pulse">🦖</div>
-          <h2 id="overlay-title" class="overlay-title">READY RUNNER?</h2>
-          <p id="overlay-subtitle" class="overlay-desc">Press <kbd>Space</kbd> or <kbd>↑</kbd> to jump. Press <kbd>↓</kbd> to duck.</p>
-          <button id="start-btn" class="cta-btn">
-            <span class="btn-text">START RUN</span>
-            <span class="btn-shine"></span>
-          </button>
+      <div class="logo-group">
+        <span class="logo-icon">🥥</span>
+        <div>
+          <h1 class="logo-title">Coconut Breaker</h1>
+          <p class="logo-subtitle">Smash, collect milk & conquer the island!</p>
         </div>
       </div>
-    </div>
+      
+      <div class="top-stats">
+        <div class="stat-badge">
+          <span class="badge-label">Total Smashed</span>
+          <span class="badge-value" id="totalSmashed">0</span>
+        </div>
+        <div class="stat-badge highlight">
+          <span class="badge-label">🥥 Milk Coins</span>
+          <span class="badge-value" id="coconutMilk">0</span>
+        </div>
+        <button id="soundToggleBtn" class="icon-btn" title="Toggle Sound">🔊</button>
+      </div>
+    </header>
 
-    <!-- Mobile & Touch Controls -->
-    <div class="touch-controls">
-      <button id="duck-btn" class="touch-btn duck-btn" aria-label="Duck">
-        <span>▼</span> DUCK
-      </button>
-      <button id="jump-btn" class="touch-btn jump-btn" aria-label="Jump">
-        <span>▲</span> JUMP
-      </button>
-    </div>
+    <!-- Main Game Area -->
+    <main class="main-content">
+      <!-- Left / Center: Interactive Breaker Area -->
+      <section class="gameplay-area">
+        <div class="stage-indicator">
+          <span class="stage-tag" id="coconutTypeTag">Common Green Coconut</span>
+          <div class="combo-counter" id="comboCounter">COMBO x<span id="comboVal">1</span></div>
+        </div>
 
-    <!-- Control Hints -->
-    <footer class="controls-legend">
-      <div class="key-hint"><kbd>Space</kbd> / <kbd>▲</kbd> Jump</div>
-      <div class="key-hint"><kbd>▼</kbd> Duck</div>
-      <div class="key-hint"><kbd>P</kbd> Pause</div>
-      <div class="key-hint"><kbd>M</kbd> Toggle Audio</div>
-    </footer>
-  </main>
+        <!-- Coconut Arena -->
+        <div class="coconut-stage" id="coconutStage">
+          <!-- Floating damage numbers container -->
+          <div id="damageFloats" class="damage-floats"></div>
 
-  <script src="game.js"></script>
+          <!-- The Interactive Coconut SVG / Model -->
+          <div class="coconut-wrapper" id="coconutWrapper" role="button" tabindex="0" aria-label="Crack the coconut">
+            <div class="coconut-shadow"></div>
+            <div class="coconut-character" id="coconutChar">
+              <!-- SVG Coconut for crisp high-detail visuals and cracks -->
+              <svg viewBox="0 0 200 220" class="coconut-svg" id="coconutSvg">
+                <defs>
+                  <radialGradient id="coconutGrad" cx="35%" cy="30%" r="70%">
+                    <stop offset="0%" stop-color="#8d5b36"/>
+                    <stop offset="60%" stop-color="#5a381e"/>
+                    <stop offset="100%" stop-color="#341c0a"/>
+                  </radialGradient>
+                  <radialGradient id="huskGrad" cx="40%" cy="30%" r="65%">
+                    <stop offset="0%" stop-color="#4ade80"/>
+                    <stop offset="50%" stop-color="#16a34a"/>
+                    <stop offset="100%" stop-color="#14532d"/>
+                  </radialGradient>
+                  <radialGradient id="goldenGrad" cx="35%" cy="30%" r="70%">
+                    <stop offset="0%" stop-color="#fef08a"/>
+                    <stop offset="60%" stop-color="#eab308"/>
+                    <stop offset="100%" stop-color="#854d0e"/>
+                  </radialGradient>
+                  <radialGradient id="meatGrad" cx="40%" cy="40%" r="60%">
+                    <stop offset="0%" stop-color="#ffffff"/>
+                    <stop offset="85%" stop-color="#f1f5f9"/>
+                    <stop offset="100%" stop-color="#cbd5e1"/>
+                  </radialGradient>
+                  <!-- Inner liquid filter glow -->
+                  <filter id="splashGlow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#38bdf8"/>
+                  </filter>
+                </defs>
+
+                <!-- Outer Shell -->
+                <path id="shellBase" d="M100 15 C155 15, 185 65, 185 125 C185 185, 150 205, 100 205 C50 205, 15 185, 15 125 C15 65, 45 15, 100 15 Z" fill="url(#coconutGrad)" />
+
+                <!-- 3 Characteristic Coconut Eyes -->
+                <g id="coconutEyes">
+                  <ellipse cx="85" cy="65" rx="7" ry="9" fill="#241205" opacity="0.85" />
+                  <ellipse cx="115" cy="65" rx="7" ry="9" fill="#241205" opacity="0.85" />
+                  <ellipse cx="100" cy="85" rx="8" ry="7" fill="#241205" opacity="0.85" />
+                </g>
+
+                <!-- Natural Fiber Lines / Texture -->
+                <path d="M40 70 Q70 120 60 170" stroke="#3b1f0c" stroke-width="2.5" fill="none" opacity="0.35" stroke-linecap="round" />
+                <path d="M160 70 Q130 120 140 170" stroke="#3b1f0c" stroke-width="2.5" fill="none" opacity="0.35" stroke-linecap="round" />
+                <path d="M100 20 Q100 100 100 200" stroke="#3b1f0c" stroke-width="2.5" fill="none" opacity="0.25" stroke-dasharray="4,8" />
+
+                <!-- Dynamic crack overlays (Revealed on HP thresholds) -->
+                <g id="crackOverlay1" class="crack-layer" opacity="0">
+                  <path d="M100 40 L90 80 L115 110 L95 140" stroke="#f8fafc" stroke-width="3" fill="none" stroke-linecap="round"/>
+                  <path d="M90 80 L65 95" stroke="#f8fafc" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                </g>
+                <g id="crackOverlay2" class="crack-layer" opacity="0">
+                  <path d="M95 140 L120 170 L105 195" stroke="#ffffff" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                  <path d="M115 110 L145 125 L160 115" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+                  <path d="M65 95 L40 120" stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round"/>
+                </g>
+                <g id="crackOverlay3" class="crack-layer" opacity="0">
+                  <!-- Split fissure showing white meat & splash! -->
+                  <path d="M90 75 Q105 110 95 155 Q85 110 90 75" fill="url(#meatGrad)" stroke="#38bdf8" stroke-width="1.5" />
+                  <path d="M110 105 L150 140 L168 150" stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round"/>
+                </g>
+              </svg>
+            </div>
+            <!-- Equipped tool indicator hovering near click -->
+            <div class="equipped-tool-icon" id="toolCursorIcon">🔨</div>
+          </div>
+
+          <!-- HP / Durability Bar -->
+          <div class="hp-gauge-container">
+            <div class="hp-info">
+              <span class="hp-label">Durability</span>
+              <span class="hp-values"><span id="currHp">50</span> / <span id="maxHp">50</span> HP</span>
+            </div>
+            <div class="hp-bar-bg">
+              <div class="hp-bar-fill" id="hpBarFill" style="width: 100%;"></div>
+            </div>
+          </div>
+
+          <!-- Frenzy / Fever Bar -->
+          <div class="frenzy-gauge-container" id="frenzyContainer">
+            <div class="frenzy-bar-bg">
+              <div class="frenzy-bar-fill" id="frenzyBarFill" style="width: 0%;"></div>
+            </div>
+            <span class="frenzy-text" id="frenzyText">⚡ FEVER RUSH: 0%</span>
+          </div>
+
+          <!-- Quick clicker action stats -->
+          <div class="breaker-stats-row">
+            <div class="micro-stat">
+              <span class="micro-icon">💥</span>
+              <span>Power: <strong id="statPower">1</strong></span>
+            </div>
+            <div class="micro-stat">
+              <span class="micro-icon">⚡</span>
+              <span>Crit Chance: <strong id="statCrit">5%</strong></span>
+            </div>
+            <div class="micro-stat">
+              <span class="micro-icon">🤖</span>
+              <span>Auto-Crack: <strong id="statAuto">0/s</strong></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Shop, Tool Upgrades & Island Helpers -->
+      <aside class="sidebar-shop">
+        <!-- Tabs -->
+        <div class="shop-tabs">
+          <button class="tab-btn active" id="tabToolsBtn">🔨 Tools</button>
+          <button class="tab-btn" id="tabHelpersBtn">🐒 Helpers</button>
+          <button class="tab-btn" id="tabUpgradesBtn">✨ Perks</button>
+        </div>
+
+        <div class="shop-content">
+          <!-- Tools Panel -->
+          <div class="tab-panel active" id="panelTools">
+            <div class="panel-header">
+              <h3>Upgrade Breaking Tools</h3>
+              <p>Higher tier tools deal massive damage per strike.</p>
+            </div>
+            <div class="shop-list" id="toolsList">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Island Helpers Panel -->
+          <div class="tab-panel" id="panelHelpers">
+            <div class="panel-header">
+              <h3>Island Recruits</h3>
+              <p>Automate coconut cracking while you relax on the beach.</p>
+            </div>
+            <div class="shop-list" id="helpersList">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Upgrades / Perks Panel -->
+          <div class="tab-panel" id="panelUpgrades">
+            <div class="panel-header">
+              <h3>Tropical Buffs</h3>
+              <p>Multiply critical chance, frenzy bursts & milk yield.</p>
+            </div>
+            <div class="shop-list" id="perksList">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Mini Achievements / Island Prestige banner -->
+        <div class="island-banner">
+          <div class="island-banner-content">
+            <span class="island-trophy">🏆</span>
+            <div>
+              <div class="island-title">Coconut Island Level <span id="islandLevel">1</span></div>
+              <div class="island-desc" id="islandGoal">Break 10 coconuts to unlock Island Boost!</div>
+            </div>
+          </div>
+          <button class="prestige-btn" id="prestigeBtn" disabled>Claim Bonus</button>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Break Splash Particles Overlay Canvas -->
+    <canvas id="particleCanvas" class="particle-canvas"></canvas>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
