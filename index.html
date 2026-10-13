@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Dino Run | Arcade Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="ambient-glow"></div>
+  <div class="stars-container" id="stars"></div>
+
+  <main class="game-wrapper">
+    <header class="game-header">
+      <div class="badge-tag">RETRO ARCADE</div>
+      <h1 class="game-title">CHRONO DINO</h1>
+      <p class="game-subtitle">Dodge prehistoric hazards & cyber-obstacles in high-speed hyperspace</p>
+    </header>
+
+    <div class="hud-panel">
+      <div class="hud-item score-card">
+        <span class="hud-label">SCORE</span>
+        <span id="score-display" class="hud-val">00000</span>
+      </div>
+      <div class="hud-item hi-card">
+        <span class="hud-label">HI-SCORE</span>
+        <span id="hiscore-display" class="hud-val">00000</span>
+      </div>
+      <div class="hud-item speed-card">
+        <span class="hud-label">VELOCITY</span>
+        <span id="speed-display" class="hud-val">1.0x</span>
+      </div>
+    </div>
+
+    <div class="canvas-container">
+      <canvas id="gameCanvas" width="900" height="320"></canvas>
+      
+      <!-- Overlay Screen for Start & Game Over -->
+      <div id="overlay-screen" class="game-overlay visible">
+        <div class="overlay-card">
+          <div id="overlay-icon" class="overlay-icon pulse">🦖</div>
+          <h2 id="overlay-title" class="overlay-title">READY RUNNER?</h2>
+          <p id="overlay-subtitle" class="overlay-desc">Press <kbd>Space</kbd> or <kbd>↑</kbd> to jump. Press <kbd>↓</kbd> to duck.</p>
+          <button id="start-btn" class="cta-btn">
+            <span class="btn-text">START RUN</span>
+            <span class="btn-shine"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile & Touch Controls -->
+    <div class="touch-controls">
+      <button id="duck-btn" class="touch-btn duck-btn" aria-label="Duck">
+        <span>▼</span> DUCK
+      </button>
+      <button id="jump-btn" class="touch-btn jump-btn" aria-label="Jump">
+        <span>▲</span> JUMP
+      </button>
+    </div>
+
+    <!-- Control Hints -->
+    <footer class="controls-legend">
+      <div class="key-hint"><kbd>Space</kbd> / <kbd>▲</kbd> Jump</div>
+      <div class="key-hint"><kbd>▼</kbd> Duck</div>
+      <div class="key-hint"><kbd>P</kbd> Pause</div>
+      <div class="key-hint"><kbd>M</kbd> Toggle Audio</div>
+    </footer>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
